@@ -44,7 +44,7 @@ COPY --from=python-deps /usr/local/lib /usr/local/lib
 ENV LD_LIBRARY_PATH /usr/local/lib
 
 COPY --from=python-deps --chown=ftuser:ftuser /home/ftuser/.local /home/ftuser/.local
-
+RUN apt-get update && apt-get install -y ntp
 USER ftuser
 # Install and execute
 COPY --chown=ftuser:ftuser . /freqtrade/
@@ -53,6 +53,7 @@ RUN pip install -e . --user --no-cache-dir --no-build-isolation \
   && mkdir /freqtrade/user_data/ \
   && freqtrade install-ui
 
-ENTRYPOINT ["freqtrade"]
+# ENTRYPOINT ["freqtrade"]
 # Default to trade mode
-CMD [ "trade" ]
+CMD ["ntpd", "-gq"]
+
